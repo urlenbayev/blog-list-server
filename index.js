@@ -7,6 +7,8 @@ const morgan = require('morgan')
 
 
 mongoose.connect(config.mongoUrl)
+  .then(console.log('Connected to db'))
+  .catch(error => {console.log(error)})
 
 
 //Middlewares
@@ -20,7 +22,7 @@ const blogsRouter = require('./controllers/blogs')
 
 
 //Endpoints
-app.use('/api/blog', blogsRouter)
+app.use('/api/blogs', blogsRouter)
 
 
 app.listen(config.port, () => {
