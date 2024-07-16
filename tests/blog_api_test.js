@@ -23,7 +23,7 @@ const testBlogs =
   },
  ]
 
- beforeEach(async () => {
+beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(testBlogs[0])
   await blogObject.save()
@@ -31,7 +31,8 @@ const testBlogs =
   await blogObject.save()
 })
 
-test.only('blogs are returned as json', async () => {
+
+test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
@@ -40,17 +41,53 @@ test.only('blogs are returned as json', async () => {
 })
 
 
-test.only('there are 2 blogs', async () => {
+test('there are 2 blogs', async () => {
   const res = await api.get('/api/blogs')
 
   assert.strictEqual(res.body.length, 2)
 })
 
-test.only('id formatted correctly', async () => {
+
+test('id formatted correctly', async () => {
   const res = await api.get('/api/blogs')
   const result = res.body.every(_ => Object.keys(_).includes("id"))
   assert.strictEqual(result, true)
 })
+
+
+test.only('valid post blogs, rows number in db increased by one', async () => {
+  const newBlog = {
+    "title": "Why use Scala for building backend applications?",
+    "author": "JAROSLAV REGEC",
+    "url": "https://scalac.io/blog/why-use-scala/",
+    "likes": 1 
+  }
+  const initialRows = testBlogs.length 
+
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogs = await Blog.find({})
+  const rows = blogs.length
+
+
+  const res = await api.get('/api/blogs')
+
+  const saved = res.body.some( blog => 
+    blog.title === newBlog.title &&
+    blog.author === newBlog.author &&
+    blog.url === newBlog.url &&
+    blog.likes === newBlog.likes
+  )
+
+  assert.strictEqual(rows, initialRows + 1)
+  assert.strictEqual(saved, true)
+})
+
 
 after(async () => {
   await mongoose.connection.close()
