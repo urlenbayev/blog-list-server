@@ -46,10 +46,10 @@ test.only('there are 2 blogs', async () => {
   assert.strictEqual(res.body.length, 2)
 })
 
-test('the first blog is about MongoDB', async () => {
+test.only('id formatted correctly', async () => {
   const res = await api.get('/api/blogs')
-  const titles = res.body.map(_ => _.title)
-  assert.strictEqual(titles.includes('Introduction to MongoDB'), true)
+  const result = res.body.every(_ => Object.keys(_).includes("id"))
+  assert.strictEqual(result, true)
 })
 
 after(async () => {
