@@ -19,3 +19,14 @@ Content-Type: application/json
   "url": "https://scalac.io/blog/why-use-scala/",
   "likes": 1 
 }
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Ruby on Rails — July 2024",
+  "author": "Sajjad Umar",
+  "url": "https://medium.com/@sajjadumar/ruby-on-rails-july-2024-d73e4b2e3394",
+  "likes": 0 
+}
