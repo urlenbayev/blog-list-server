@@ -50,4 +50,19 @@ blogsRouter.put('/:id', async (req, res, next) => {
   }
 })
 
+
+//DELETE http://localhost:3001/api/blogs/:id
+//To remove a certain blog
+blogsRouter.delete('/:id', async (req, res, next) => {
+  const { id } = req.params
+
+  try {
+    const result = await Blog.findByIdAndDelete(id)
+    res.status(200).send(result)
+  } catch(error) {
+    next(error)
+  }
+})
+
+
 module.exports = blogsRouter

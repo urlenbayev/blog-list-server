@@ -38,6 +38,25 @@ beforeEach(async () => {
 })
 
 
+//Test that after valid blog removal db rows decreased by one
+test.only('rows decreased by one', async() => {
+  const id = testBlogsIds[1]
+  const initialRows = await Blog.find({})
+  const rowNumbersBefore = initialRows.length
+
+
+  await api
+    .delete(`/api/blogs/${id}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  
+  const rows = await Blog.find({})
+  const rowNumbers = rows.length
+
+  assert.strictEqual(rowNumbers, rowNumbersBefore - 1)
+})
+
+
 //Test that blogs are returned as JSON
 test('blogs are returned as json', async () => {
   await api
@@ -100,7 +119,7 @@ test('rows number increased by one', async () => {
 
 
 //Test that a valid put blogs correctly updates likes field
-test.only('likes updated correctly', async () => {
+test('likes updated correctly', async () => {
   const id = testBlogsIds[0]
   const update = {
     "likes": 420
