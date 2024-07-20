@@ -23,15 +23,22 @@ const testBlogs =
   },
  ]
 
+
+let testBlogsIds = []
+
+//Before each test, clear the database and insert test blogs
 beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(testBlogs[0])
   await blogObject.save()
   blogObject = new Blog(testBlogs[1])
   await blogObject.save()
+  const savedBlogs = await Blog.find({})
+  testBlogsIds = savedBlogs.map(blog => blog._id.toString())
 })
 
 
+//Test that blogs are returned as JSON
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
@@ -41,6 +48,7 @@ test('blogs are returned as json', async () => {
 })
 
 
+//Test that there are correct amount of rows in the database
 test('there are 2 blogs', async () => {
   const res = await api.get('/api/blogs')
 
@@ -48,6 +56,7 @@ test('there are 2 blogs', async () => {
 })
 
 
+//Test that the id field is formatted correctly
 test('id formatted correctly', async () => {
   const res = await api.get('/api/blogs')
   const result = res.body.every(_ => Object.keys(_).includes("id"))
@@ -55,7 +64,8 @@ test('id formatted correctly', async () => {
 })
 
 
-test.only('valid post blogs, rows number in db increased by one', async () => {
+//Test that a valid post blogs increases rows number in db by one
+test('rows number increased by one', async () => {
   const newBlog = {
     "title": "Why use Scala for building backend applications?",
     "author": "JAROSLAV REGEC",
@@ -86,6 +96,25 @@ test.only('valid post blogs, rows number in db increased by one', async () => {
 
   assert.strictEqual(rows, initialRows + 1)
   assert.strictEqual(saved, true)
+})
+
+
+//Test that a valid put blogs correctly updates likes field
+test.only('likes updated correctly', async () => {
+  const id = testBlogsIds[0]
+  const update = {
+    "likes": 420
+  }
+
+  await api
+      .put(`/api/blogs/${id}`)
+      .send(update)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+  const updatedBlog = await Blog.findById(id)
+  assert.strictEqual(update.likes, updatedBlog.likes)
+  
 })
 
 

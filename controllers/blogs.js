@@ -21,14 +21,30 @@ blogsRouter.get('/', async (req, res) => {
   res.json(blogs)
 })
 
+
 //POST http://localhost:3001/api/blogs
 //For creating a blog
-blogsRouter.post('/', async (req, res) => {
+blogsRouter.post('/', async (req, res, next) => {
   const blog = new Blog(req.body)
   
   try {
     const result = await blog.save()
     res.status(201).json(result)
+  } catch(error) {
+    next(error)
+  }
+})
+
+
+//PUT http://localhost:3001/api/blogs/:id
+//For updating title, author, url and likes for a blog
+blogsRouter.put('/:id', async (req, res, next) => {
+  const { id }  = req.params
+  const blog = req.body 
+
+  try {
+    const result = await Blog.findByIdAndUpdate(id, blog, {new: true})
+    res.status(200).json(result)
   } catch(error) {
     next(error)
   }
