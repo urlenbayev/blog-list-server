@@ -18,11 +18,12 @@ app.use(morgan)
 
 //Routers
 const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
 
 
 //Endpoints
 app.use('/api/blogs', blogsRouter)
-
+app.use('/api/users', usersRouter)
 
 app.listen(config.port, () => {
   console.log(`Server running on port ${config.port}`)

@@ -5,7 +5,8 @@ Content-Type: application/json
   "title": "Learning Functional Programming with Scala",
   "author": "Ryan Susana",
   "url": "https://ryansusana.medium.com/learning-functional-programming-with-scala-ccc7bf68214f",
-  "likes": 99  
+  "likes": 99,
+  "user": "669d30f99152d457f5002430"
 }
 
 
@@ -17,7 +18,8 @@ Content-Type: application/json
   "title": "Why use Scala for building backend applications?",
   "author": "JAROSLAV REGEC",
   "url": "https://scalac.io/blog/why-use-scala/",
-  "likes": 1 
+  "likes": 1,
+  "user": "669d30f99152d457f5002430" 
 }
 
 ###

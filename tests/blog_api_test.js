@@ -39,7 +39,7 @@ beforeEach(async () => {
 
 
 //Test that after valid blog removal db rows decreased by one
-test.only('rows decreased by one', async() => {
+test('rows decreased by one', async() => {
   const id = testBlogsIds[1]
   const initialRows = await Blog.find({})
   const rowNumbersBefore = initialRows.length
