@@ -1,7 +1,16 @@
+require('dotenv').config()
 const blogsRouter = require('express').Router()
 const Blog = require('../models/Blog')
 const User = require('../models/User')
+const jwt = require('jsonwebtoken')
 
+const getTokenFrom = req => {
+  const authorization = req.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 //GET http://localhost:3001/api/blogs
 //Result is an array of blogs with title, author, url and likes
@@ -28,10 +37,20 @@ blogsRouter.get('/', async (req, res) => {
 //For creating a blog
 blogsRouter.post('/', async (req, res, next) => {
   const blog = new Blog(req.body)
+  const token = getTokenFrom(req)
 
-  const user = await User.findById(req.body.user)
+  if (!token) {
+    return res.status(401).json({ error: 'token missing' })
+  }
   
   try {
+    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: 'token invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+    
     const result = await blog.save()
     user.blogs = user.blogs.concat(result._id)
     await user.save()
